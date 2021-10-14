@@ -11,10 +11,11 @@ var cabsLocation = make(map[model.Cab]model.Location)
 var lastCabId int
 
 type CabRepository interface {
-	RegisterCab(model.Cab) (model.Cab, error)
+	CabRepository(model.Cab) (model.Cab, error)
 	GetAvailableCabs(source model.Location, radius float64) ([]model.Cab, error)
-	UpdateLocation(model.Cab, model.Location) error
+	UpdateLocation(model.Cab) error
 	CompleteTrip(trip model.Trip)
+	GetCab(cabId int) (model.Cab, error)
 }
 
 type Cab struct {
@@ -24,7 +25,7 @@ func NewCabRepository() CabRepository {
 	return Cab{}
 }
 
-func (c Cab) RegisterCab(cabParam model.Cab) (model.Cab, error) {
+func (c Cab) CabRepository(cabParam model.Cab) (model.Cab, error) {
 	_, found := cabs[cabParam.Id]
 
 	if found {
@@ -37,7 +38,7 @@ func (c Cab) RegisterCab(cabParam model.Cab) (model.Cab, error) {
 	return newCab, nil
 }
 
-func (c Cab) UpdateLocation(cab model.Cab, location model.Location) error {
+func (c Cab) UpdateLocation(cab model.Cab) error {
 
 	_, found := cabsLocation[cab]
 
@@ -64,4 +65,14 @@ func (c Cab) CompleteTrip(trip model.Trip) {
 
 	trip.Status = model.FINISHED
 
+}
+
+func (c Cab) GetCab(cabId int) (model.Cab, error) {
+
+	_, found := cabs[cabId]
+
+	if found {
+		return cabs[cabId], nil
+	}
+	return model.Cab{}, errors.New("the cab is not present")
 }

@@ -9,21 +9,36 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func RegisterCab(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func CabRepository(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	var err error
 	fmt.Fprint(w, "Welcome!\n")
 	var cab model.Cab
 	err = customjson.Decode(r.Body, &cab)
 	if err != nil {
-		//TODO: fmt.Fprint(w, helper.BadError("code", "message"))
 		fmt.Fprint(w, "Bad Request")
 		return
 	}
-	newCab, cabError := g.cabuseCase.RegisterCab(cab)
+	newCab, cabError := g.cabuseCase.CabRepository(cab)
 	if cabError != nil {
-		//TODO: fmt.Fprint(w, helper.BadError("code", "message"))
 		fmt.Fprint(w, cabError)
 	}
 	fmt.Fprint(w, newCab)
+}
+
+func UpdateCabLocation(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+	var err error
+	fmt.Fprint(w, "Welcome!\n")
+	var cab model.Cab
+	err = customjson.Decode(r.Body, &cab)
+	if err != nil {
+		fmt.Fprint(w, "Bad Request")
+		return
+	}
+	err = g.cabuseCase.UpdateLocation(cab.Id)
+	if err != nil {
+		fmt.Fprint(w, err)
+	}
+	fmt.Fprint(w, "Updated location Successfully")
 }

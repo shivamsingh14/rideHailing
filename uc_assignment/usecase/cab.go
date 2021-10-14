@@ -7,38 +7,40 @@ import (
 )
 
 type CabUsecase interface {
-	RegisterCab(cabParam model.Cab) (model.Cab, error)
-	UpdateLocation()
-	UpdateCabAvailability()
+	CabRepository(cabParam model.Cab) (model.Cab, error)
+	UpdateLocation(cabId int) error
 }
 
 type CabUsecaseParam struct {
-	RegisterCab repository.CabRepository
+	CabRepository repository.CabRepository
 }
 
 type cabUsecase struct {
-	registerCab repository.CabRepository
+	cabRepository repository.CabRepository
 }
 
 func NewCabUsecase(param CabUsecaseParam) CabUsecase {
 	return cabUsecase{
-		registerCab: param.RegisterCab,
+		cabRepository: param.CabRepository,
 	}
 }
 
-func (cab cabUsecase) RegisterCab(cabParam model.Cab) (model.Cab, error) {
+func (cab cabUsecase) CabRepository(cabParam model.Cab) (model.Cab, error) {
 
-	newCab, cabError := cab.registerCab.RegisterCab(cabParam)
+	newCab, cabError := cab.cabRepository.CabRepository(cabParam)
 	if cabError != nil {
 		return model.Cab{}, errors.New(cabError.Error())
 	}
 	return newCab, nil
 }
 
-func (cab cabUsecase) UpdateLocation() {
+func (c cabUsecase) UpdateLocation(cabId int) error {
 
-}
-
-func (cab cabUsecase) UpdateCabAvailability() {
+	cab, err := c.cabRepository.GetCab(cabId)
+	if err != nil {
+		return err
+	}
+	c.cabRepository.UpdateLocation(cab)
+	return nil
 
 }

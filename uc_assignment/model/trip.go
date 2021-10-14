@@ -7,6 +7,7 @@ const (
 )
 
 type Trip struct {
+	ID          int
 	Source      Location
 	Destination Location
 	Cab         Cab

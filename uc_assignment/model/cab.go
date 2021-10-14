@@ -2,7 +2,7 @@ package model
 
 type Cab struct {
 	Id          int
-	driver      User
+	Driver      User
 	License     string
 	IsAvailable bool
 }

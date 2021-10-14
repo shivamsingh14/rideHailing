@@ -10,8 +10,10 @@ import (
 
 type BookingUsecase interface {
 	BookRide(rider model.User, source model.Location, destination model.Location) (model.Trip, error)
-	ShowHistory()
-	CompleteTrip(trip model.Trip) float64
+	GetRide(tripId int) (model.Trip, error)
+	RiderTripHistory(rider model.User) ([]model.Trip, error)
+	DriverTripHistory(driver model.User) ([]model.Trip, error)
+	CompleteTrip(trip model.Trip) (float64, error)
 	calculateFare(distance float64, source, destination model.Location) float64
 }
 
@@ -74,16 +76,55 @@ func (booking bookingUsecase) calculateFare(distance float64, source, destinatio
 	return price
 }
 
-func (booking bookingUsecase) CompleteTrip(trip model.Trip) float64 {
+func (booking bookingUsecase) CompleteTrip(trip model.Trip) (float64, error) {
+
+	trip, err := booking.bookride.GetRide(trip.ID)
+	if err != nil {
+		return 0.0, err
+	}
 
 	tripDistance := helper.FindDistance(trip.Source, trip.Destination)
 	price := booking.calculateFare(tripDistance, trip.Source, trip.Destination)
 
 	booking.cabRepo.CompleteTrip(trip)
-	return price
+	return price, nil
 
 }
 
-func (booking bookingUsecase) ShowHistory() {
+func (booking bookingUsecase) RiderTripHistory(rider model.User) ([]model.Trip, error) {
 
+	var userTrips []model.Trip
+
+	allTrips, err := booking.bookride.RideHistory()
+	for _, trip := range allTrips {
+		if trip.Rider.Id == rider.Id {
+			userTrips = append(userTrips, trip)
+		}
+	}
+
+	return userTrips, err
+
+}
+
+func (booking bookingUsecase) DriverTripHistory(driver model.User) ([]model.Trip, error) {
+
+	var driverTrips []model.Trip
+
+	allTrips, err := booking.bookride.RideHistory()
+	for _, trip := range allTrips {
+		if trip.Cab.Driver.Id == driver.Id {
+			driverTrips = append(driverTrips, trip)
+		}
+	}
+
+	return driverTrips, err
+
+}
+
+func (booking bookingUsecase) GetRide(tripId int) (model.Trip, error) {
+	trip, err := booking.bookride.GetRide(tripId)
+	if err != nil {
+		return model.Trip{}, err
+	}
+	return trip, nil
 }
