@@ -1,17 +1,18 @@
 package model
 
 const (
-	REST        = 0
-	IN_PROGRESS = 1
-	FINISHED    = 2
+	REST        = "Not Started"
+	IN_PROGRESS = "Ongoing"
+	FINISHED    = "Completed"
 )
 
 type Trip struct {
 	ID          int
-	Source      Location
-	Destination Location
-	Cab         Cab
-	Rider       User
+	Source      *Location
+	Destination *Location
+	Cab         *Cab
+	Rider       *User
+	Driver      *User
 	Cost        float64
-	Status      int
+	Status      string
 }

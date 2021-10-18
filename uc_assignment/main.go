@@ -15,10 +15,12 @@ func main() {
 
 	userUsecase := initializeUserUsecase()
 	bookingsUsecase := initializeBookingUsecase()
+	cabUsecase := initializeCabUsecase()
 
 	deliveryParams = delivery.DeliveryParams{
 		UserUsecase:     userUsecase,
 		BookingsUsecase: bookingsUsecase,
+		CabuseCase:      cabUsecase,
 	}
 
 	delivery.NewHTTPDelivery(deliveryParams)
@@ -45,13 +47,17 @@ func initializeBookingUsecase() usecase.BookingUsecase {
 	longPricingRepo := pricingRepository.NewLongRideRepo()
 	bookRideRepo := bookingRepository.NewBookRideRepo()
 	cabRepo := cabRepository.NewCabRepository()
+	driverRepo := repository.NewDriverRepo()
+	riderRepo := repository.NewRiderRepo()
 
 	bookingUseCaseParams := usecase.BookingUsecaseParam{
-		BookRide:      bookRideRepo,
-		BasePricing:   basePricingRepo,
-		PremimPricing: premiumPricingRepo,
-		LongPricing:   longPricingRepo,
-		CabRepo:       cabRepo,
+		BookRide:         bookRideRepo,
+		BasePricing:      basePricingRepo,
+		PremimPricing:    premiumPricingRepo,
+		LongPricing:      longPricingRepo,
+		CabRepo:          cabRepo,
+		DriverRepository: driverRepo,
+		RiderRepository:  riderRepo,
 	}
 
 	return usecase.NewBookingUsecase(bookingUseCaseParams)
@@ -60,7 +66,13 @@ func initializeBookingUsecase() usecase.BookingUsecase {
 
 func initializeCabUsecase() usecase.CabUsecase {
 
-	cabUseCaseParams := usecase.CabUsecaseParam{}
+	cabRepository := cabRepository.NewCabRepository()
+	driverRepo := repository.NewDriverRepo()
+
+	cabUseCaseParams := usecase.CabUsecaseParam{
+		CabRepository:    cabRepository,
+		DriverRepository: driverRepo,
+	}
 
 	return usecase.NewCabUsecase(cabUseCaseParams)
 

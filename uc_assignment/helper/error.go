@@ -1,19 +1,18 @@
 package helper
 
-type Error struct {
-	code     string
-	message  string
-	httpCode int
-}
-
 const (
-	BAD_REQUEST = 400
+	CAB_ALREADY_CREATED = "Cab already created"
+	CAB_NOT_FOUND       = "Cab not found"
 )
 
-func BadError(code, message string) *Error {
-	return &Error{
-		code:     code,
-		message:  message,
-		httpCode: 400,
-	}
+type Error struct {
+	Code    int
+	Message string
+	Error   string
+}
+
+type BadRequest struct {
+	Code    int
+	Message string
+	Error   string
 }

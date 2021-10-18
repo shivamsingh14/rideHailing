@@ -11,14 +11,20 @@ func InitEndpoint() {
 
 	router = httprouter.New()
 	router.POST("/rider", RegisterRider)
+	router.GET("/rider", ListRider)
 	router.POST("/driver", RegisterDriver)
-	router.POST("/cab", CabRepository)
+	router.GET("/driver", ListDriver)
+	router.POST("/cab", CreateCab)
+	router.GET("/cab", ListCabs)
+	router.POST("/cab/location", UpdateCabLocation)
+	router.POST("/cab/assign", AssignCab)
+	router.POST("/available-cab", GetAvailableCabs)
 	router.GET("/rider/trips", RiderTripHistory)
 	router.GET("/driver/trips", DriverTripHistory)
 	router.POST("/ride", BookRide)
-	router.PATCH("/ride/complete", CompleteTrip)
-	router.PATCH("/cab/location", UpdateCabLocation)
+	router.POST("/ride/complete", CompleteTrip)
 
+	log.Printf("Starting server..")
 	log.Fatal(http.ListenAndServe(":8080", router))
 
 }

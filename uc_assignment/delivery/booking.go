@@ -3,7 +3,9 @@ package delivery
 import (
 	"fmt"
 	"net/http"
+	"uc_assignment/helper"
 	customjson "uc_assignment/helper/json"
+	requestresponse "uc_assignment/helper/requestResponse"
 	"uc_assignment/model"
 
 	"github.com/julienschmidt/httprouter"
@@ -11,38 +13,34 @@ import (
 
 func BookRide(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	var errRider, errSource, errDestination error
-	fmt.Fprint(w, "Welcome!\n")
-	var rider model.User
-	var source, destination model.Location
-	errRider = customjson.Decode(r.Body, &rider)
-	errSource = customjson.Decode(r.Body, &source)
-	errDestination = customjson.Decode(r.Body, &destination)
-	if errRider != nil || errSource != nil || errDestination != nil {
-		fmt.Fprint(w, "Bad Request")
+	var bookRide requestresponse.BookRide
+	bookRideError := customjson.Decode(r.Body, &bookRide)
+	if bookRideError != nil {
+		requestresponse.MakeResponse(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
 
-	ride, rideErr := g.bookingUsecase.BookRide(rider, source, destination)
-	if rideErr != nil {
-		fmt.Fprint(w, rideErr)
+	ride, rideErr := g.bookingUsecase.BookRide(bookRide.Rider, bookRide.Source, bookRide.Destination)
+	if rideErr != (helper.Error{}) {
+		requestresponse.MakeResponse(w, rideErr.Code, rideErr)
+		return
 	}
-	fmt.Fprint(w, ride)
+	requestresponse.MakeResponse(w, http.StatusCreated, ride)
 }
 
 func CompleteTrip(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	var err error
-	fmt.Fprint(w, "Welcome!\n")
-	var trip model.Trip
-	err = customjson.Decode(r.Body, &trip)
+	var trip *model.Trip
+	err := customjson.Decode(r.Body, &trip)
 	if err != nil {
-		fmt.Fprint(w, "Bad Request")
+		requestresponse.MakeResponse(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
 	tripPrice, errPrice := g.bookingUsecase.CompleteTrip(trip)
-	if errPrice != nil {
-		fmt.Fprint(w, errPrice)
+	if errPrice != (helper.Error{}) {
+		requestresponse.MakeResponse(w, errPrice.Code, errPrice)
+		return
 	}
-	fmt.Fprint(w, tripPrice)
+	successResponse := fmt.Sprintf("Trip has been completed, Your fare is %v", tripPrice)
+	requestresponse.MakeResponse(w, http.StatusOK, successResponse)
 }
