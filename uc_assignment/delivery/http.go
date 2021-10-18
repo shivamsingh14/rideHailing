@@ -23,6 +23,9 @@ func InitEndpoint() {
 	router.GET("/driver/trips", DriverTripHistory)
 	router.POST("/ride", BookRide)
 	router.POST("/ride/complete", CompleteTrip)
+	router.POST("/coupon", AddCoupon)
+	router.DELETE("/coupon", DeleteCoupon)
+	router.POST("/assign-coupon", AssignCoupon)
 
 	log.Printf("Starting server..")
 	log.Fatal(http.ListenAndServe(":8080", router))

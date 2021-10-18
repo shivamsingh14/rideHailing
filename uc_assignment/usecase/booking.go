@@ -6,6 +6,7 @@ import (
 	"uc_assignment/model"
 	repository "uc_assignment/repository/booking"
 	cabRepository "uc_assignment/repository/cab"
+	couponRepo "uc_assignment/repository/coupon"
 	pricingRepository "uc_assignment/repository/pricing"
 	userRepo "uc_assignment/repository/user"
 )
@@ -25,6 +26,7 @@ type BookingUsecaseParam struct {
 	CabRepo          cabRepository.CabRepository
 	DriverRepository userRepo.UserRepository
 	RiderRepository  userRepo.UserRepository
+	CouponRepo       couponRepo.CouponRepository
 }
 
 type bookingUsecase struct {
@@ -35,6 +37,7 @@ type bookingUsecase struct {
 	cabRepo          cabRepository.CabRepository
 	driverRepository userRepo.UserRepository
 	riderRepository  userRepo.UserRepository
+	couponRepo       couponRepo.CouponRepository
 }
 
 func NewBookingUsecase(param BookingUsecaseParam) BookingUsecase {
@@ -47,6 +50,7 @@ func NewBookingUsecase(param BookingUsecaseParam) BookingUsecase {
 		cabRepo:          param.CabRepo,
 		driverRepository: param.DriverRepository,
 		riderRepository:  param.RiderRepository,
+		couponRepo:       param.CouponRepo,
 	}
 
 }

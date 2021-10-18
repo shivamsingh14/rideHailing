@@ -20,3 +20,8 @@ type BookRide struct {
 	Destination model.Location
 	Rider       model.User
 }
+
+type AssignCoupon struct {
+	CouponCode string
+	UserNumber int
+}

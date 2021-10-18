@@ -14,12 +14,14 @@ type (
 		userUsecase    usecase.UserUsecase
 		bookingUsecase usecase.BookingUsecase
 		cabUsecase     usecase.CabUsecase
+		couponUsecase  usecase.CouponUsecase
 	}
 
 	DeliveryParams struct {
 		UserUsecase     usecase.UserUsecase
 		BookingsUsecase usecase.BookingUsecase
 		CabuseCase      usecase.CabUsecase
+		CouponUsecase   usecase.CouponUsecase
 	}
 )
 
@@ -29,6 +31,7 @@ func NewHTTPDelivery(params DeliveryParams) {
 		userUsecase:    params.UserUsecase,
 		bookingUsecase: params.BookingsUsecase,
 		cabUsecase:     params.CabuseCase,
+		couponUsecase:  params.CouponUsecase,
 	}
 
 	InitEndpoint()
